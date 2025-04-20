@@ -30,10 +30,6 @@ gcc main.c allocator.c -o allocator
 
 ![First Fit](./first-fit.png)
 
-<br>
-
-![Best Fit](./best-fit.png)
-
 ## Topics Covered
 - Low-level C programming
 - Memory and pointer management
