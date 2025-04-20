@@ -58,19 +58,25 @@ static Block* find_block(size_t size) {
 
     while (current != NULL) {
         if (current->free && current->size >= size) {
-            if (!use_best_fit) return current;
-            if (!best_block || current->size < best_block->size) {
-                best_block = current;
+            if (!use_best_fit) {
+                return current; // First Fit returns immediately
+            } else {
+                if (!best_block || current->size < best_block->size) {
+                    best_block = current;
+                }
             }
         }
         current = current->next;
     }
-    return best_block;
+
+    return use_best_fit ? best_block : NULL;
 }
 
 void* my_malloc(size_t size) {
     Block* block = find_block(size);
     if (!block) return NULL;
+
+    printf("[ALLOC] Selected block at %p | Size: %zu\n", (void*)block, block->size);
 
     if (block->size >= size + BLOCK_SIZE + 8) {
         split_block(block, size);
@@ -84,6 +90,7 @@ void my_free(void* ptr) {
     if (!ptr) return;
     Block* block = (Block*)ptr - 1;
     block->free = 1;
+    printf("[FREE] Freed block at %p | Size: %zu\n", (void*)block, block->size);
     merge_blocks();
 }
 
